@@ -3,5 +3,4 @@ yfinance
 pandas-ta
 google-generativeai
 python-dotenv
-plotly
-pandas
+pandas<3.0.0
