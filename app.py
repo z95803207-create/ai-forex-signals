@@ -13,6 +13,7 @@ st.markdown("This dashboard combines **TradingView Indicators** (via `pandas-ta`
 
 # Sidebar for controls
 st.sidebar.header("⚙️ Settings")
+model_choice = st.sidebar.selectbox("🤖 AI Model", ["Google Gemini", "Hermes (OpenRouter)"], index=0)
 # yfinance forex symbols usually have '=X' at the end
 symbol_input = st.sidebar.text_input("Forex Pair Symbol", value="EURUSD=X", help="e.g. EURUSD=X, GBPUSD=X, JPY=X")
 interval = st.sidebar.selectbox("Timeframe", ["1m", "5m", "15m", "1h", "4h", "1d"], index=2)
@@ -56,7 +57,7 @@ if st.sidebar.button("Generate Signal 🚀") or auto_refresh:
 
         tradingview_html = f"""
         <!-- TradingView Widget BEGIN -->
-        <div class="tradingview-widget-container" style="height:500px;width:100%">
+        <div class="tradingview-widget-container" style="height:600px;width:100%">
           <div id="tradingview_chart" style="height:100%;width:100%"></div>
           <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
           <script type="text/javascript">
@@ -70,13 +71,15 @@ if st.sidebar.button("Generate Signal 🚀") or auto_refresh:
           "style": "1",
           "locale": "en",
           "enable_publishing": false,
-          "hide_top_toolbar": false,
+          "withdateranges": true,
           "hide_side_toolbar": false,
           "allow_symbol_change": true,
           "details": true,
           "hotlist": true,
           "calendar": true,
-          "save_image": false,
+          "show_popup_button": true,
+          "popup_width": "1000",
+          "popup_height": "650",
           "container_id": "tradingview_chart"
         }}
           );
@@ -84,7 +87,7 @@ if st.sidebar.button("Generate Signal 🚀") or auto_refresh:
         </div>
         <!-- TradingView Widget END -->
         """
-        components.html(tradingview_html, height=500)
+        components.html(tradingview_html, height=600)
         
         col1, col2 = st.columns([1, 1])
         
@@ -96,10 +99,10 @@ if st.sidebar.button("Generate Signal 🚀") or auto_refresh:
         with col2:
             # AI Analysis
             st.subheader("🧠 AI Analyst Signal")
-            with st.spinner("Asking Gemini AI for analysis..."):
+            with st.spinner(f"Asking {model_choice} for analysis..."):
                 # Send the last 3 rows of data for context to avoid overloading the prompt
                 recent_data_str = df.tail(3).to_string()
-                ai_response = get_ai_signal(symbol_input, recent_data_str)
+                ai_response = get_ai_signal(symbol_input, recent_data_str, model_choice)
                 st.info(ai_response)
 
 if auto_refresh:
