@@ -3,4 +3,4 @@ yfinance
 google-generativeai
 python-dotenv
 plotly
-git+https://github.com/twopirllc/pandas-ta.git@development
+pandas
