@@ -7,9 +7,11 @@ def get_secret(key_name: str) -> str:
     """Reads API key from Streamlit secrets first, then falls back to .env"""
     try:
         import streamlit as st
-        return st.secrets.get(key_name, "")
+        if key_name in st.secrets:
+            return st.secrets[key_name]
     except Exception:
-        return os.getenv(key_name, "")
+        pass
+    return os.getenv(key_name, "")
 
 def get_ai_signal(symbol: str, recent_data: str, model_choice: str = "Google Gemini") -> str:
     """
