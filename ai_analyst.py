@@ -47,7 +47,7 @@ def get_ai_signal(symbol: str, recent_data: str, model_choice: str = "Google Gem
         try:
             genai.configure(api_key=gemini_api_key)
             # Updated to latest available model
-            model = genai.GenerativeModel('gemini-2.0-flash')
+            model = genai.GenerativeModel('gemini-3.6-flash')
             response = model.generate_content(prompt)
             return response.text
         except Exception as e:
